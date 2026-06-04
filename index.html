@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#F4A261" />
+  <title>Путь лапок — помощник в дрессировке собаки</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <!-- Иконка и режим приложения для iPhone (Добавить на экран «Домой») -->
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Путь лапок" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Главные шаблоны экранов -->
+  <template id="tpl-onboarding">
+    <section class="onboarding">
+      <header class="onb-header">
+        <div class="logo">
+          <span class="paw">🐾</span>
+          <span class="brand">Путь лапок</span>
+        </div>
+        <div class="step-dots"></div>
+      </header>
+      <main class="onb-body"></main>
+      <footer class="onb-footer">
+        <button class="btn ghost" data-action="back">Назад</button>
+        <button class="btn primary" data-action="next">Далее</button>
+      </footer>
+    </section>
+  </template>
+
+  <template id="tpl-main">
+    <section class="screen home">
+      <header class="top-bar">
+        <div class="dog-card">
+          <div class="dog-avatar"></div>
+          <div class="dog-meta">
+            <div class="dog-name"></div>
+            <div class="dog-sub"></div>
+          </div>
+        </div>
+        <button class="icon-btn" data-action="theme" title="Тема">◐</button>
+      </header>
+
+      <div class="banner-slot"></div>
+
+      <section class="block">
+        <div class="block-head">
+          <h2>Полезные уроки</h2>
+          <span class="block-sub" id="today-progress"></span>
+        </div>
+        <div class="task-list" id="today-tasks"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head">
+          <h2>Быстрые действия</h2>
+        </div>
+        <div class="quick-grid">
+          <button class="quick" data-go="commands">
+            <span class="qi">🦴</span><span>Команды</span>
+          </button>
+          <button class="quick" data-go="clicker">
+            <span class="qi">🔔</span><span>Кликер</span>
+          </button>
+          <button class="quick" data-go="whistle">
+            <span class="qi">🎵</span><span>Свисток</span>
+          </button>
+          <button class="quick" data-go="timer">
+            <span class="qi">⏱</span><span>Сессия</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="block-head">
+          <h2>Прогресс по 6 направлениям</h2>
+        </div>
+        <div class="progress-grid" id="progress-grid"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head">
+          <h2>Текущая стадия</h2>
+        </div>
+        <div class="stage-card" id="stage-card"></div>
+      </section>
+    </section>
+  </template>
+
+  <template id="tpl-lessons">
+    <section class="screen lessons">
+      <header class="page-head">
+        <h1>Уроки</h1>
+        <p>Программа по стадиям. Открывается следующая, когда освоено ≥ 80%.</p>
+      </header>
+      <div id="stage-tabs" class="stage-tabs"></div>
+      <div id="lessons-list" class="lessons-list"></div>
+    </section>
+  </template>
+
+  <template id="tpl-tools">
+    <section class="screen tools">
+      <header class="page-head">
+        <h1>Инструменты</h1>
+        <p>Кликер, свисток, таймер сессии, чек-лист социализации.</p>
+      </header>
+      <div class="tool-grid">
+        <button class="tool-card" data-go="commands">
+          <span class="ti">🦴</span><h3>Команды</h3><p>Иллюстрации + инструкции</p>
+        </button>
+        <button class="tool-card" data-go="clicker">
+          <span class="ti">🔔</span><h3>Кликер</h3><p>5 звуков на выбор</p>
+        </button>
+        <button class="tool-card" data-go="whistle">
+          <span class="ti">🎵</span><h3>Свисток</h3><p>Регулировка частоты</p>
+        </button>
+        <button class="tool-card" data-go="timer">
+          <span class="ti">⏱</span><h3>Таймер сессии</h3><p>5–15 минут</p>
+        </button>
+        <button class="tool-card" data-go="social">
+          <span class="ti">🌍</span><h3>Социализация</h3><p>Чек-лист 100+</p>
+        </button>
+        <button class="tool-card" data-go="health">
+          <span class="ti">💉</span><h3>Здоровье</h3><p>Календарь и заметки</p>
+        </button>
+        <button class="tool-card" data-go="breed">
+          <span class="ti">📖</span><h3>Породный профиль</h3><p>Особенности группы</p>
+        </button>
+        <button class="tool-card" data-go="reminders">
+          <span class="ti">⏰</span><h3>Напоминания</h3><p>Тренировка, прогулка, прививки</p>
+        </button>
+        <button class="tool-card" data-go="growth">
+          <span class="ti">📈</span><h3>Рост и вес</h3><p>Нормы породы + фото роста</p>
+        </button>
+        <button class="tool-card" data-go="behavior">
+          <span class="ti">🆘</span><h3>Проблемы поведения</h3><p>Лай, прыжки, реактивность</p>
+        </button>
+        <button class="tool-card" data-go="sounds">
+          <span class="ti">🔊</span><h3>Звуки привыкания</h3><p>Гроза, фейерверк, звонок</p>
+        </button>
+        <button class="tool-card" data-go="food">
+          <span class="ti">🍲</span><h3>Порция корма</h3><p>Калькулятор по весу</p>
+        </button>
+      </div>
+    </section>
+  </template>
+
+  <template id="tpl-diary">
+    <section class="screen diary">
+      <header class="page-head">
+        <h1>Дневник</h1>
+        <p>История тренировок и заметки. Никакой агрессивной геймификации.</p>
+      </header>
+      <div class="diary-summary" id="diary-summary"></div>
+      <div class="diary-add">
+        <button class="btn primary" data-action="add-entry">+ Добавить запись</button>
+      </div>
+      <div class="diary-log" id="diary-log"></div>
+    </section>
+  </template>
+
+  <template id="tpl-profile">
+    <section class="screen profile">
+      <header class="page-head">
+        <h1>Профиль</h1>
+      </header>
+      <div id="profile-body"></div>
+      <div class="profile-actions">
+        <button class="btn outline" data-action="export">💾 Сохранить копию данных</button>
+        <button class="btn outline" data-action="import">📥 Восстановить из копии</button>
+        <button class="btn danger" data-action="reset">Сбросить и пройти онбординг заново</button>
+      </div>
+      <footer class="legal">
+        «Путь лапок» помогает обучать собаку, но не заменяет ветеринара или сертифицированного кинолога.
+        Подход: позитивное подкрепление, LIMA, AVSAB.
+      </footer>
+    </section>
+  </template>
+
+  <nav id="tabbar" class="tabbar hidden">
+    <button class="tab" data-go="home"><span>🏠</span><small>Главная</small></button>
+    <button class="tab" data-go="lessons"><span>🎓</span><small>Уроки</small></button>
+    <button class="tab" data-go="commands"><span>🦴</span><small>Команды</small></button>
+    <button class="tab" data-go="diary"><span>📓</span><small>Дневник</small></button>
+    <button class="tab" data-go="tools"><span>🧰</span><small>Инструменты</small></button>
+    <button class="tab" data-go="profile"><span>👤</span><small>Профиль</small></button>
+  </nav>
+
+  <div id="modal-root"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/breeds.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/screens.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/commands.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/reminders.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Сервис-воркер: приложение работает офлайн после первого открытия.
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
